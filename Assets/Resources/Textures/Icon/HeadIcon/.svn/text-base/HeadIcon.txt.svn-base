@@ -1,0 +1,28 @@
+{"frames": {
+
+"1":
+{
+	"frame": {"x":2,"y":2,"w":114,"h":98},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":6,"w":114,"h":98},
+	"sourceSize": {"w":114,"h":104}
+},
+"2":
+{
+	"frame": {"x":2,"y":102,"w":100,"h":104},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":0,"w":100,"h":104},
+	"sourceSize": {"w":114,"h":104}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker ",
+	"version": "1.0",
+	"image": "HeadIcon.png",
+	"format": "RGBA8888",
+	"size": {"w":128,"h":256},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:66795ba72094734b3a180ad5a6fdcc54:1/1$"
+}
+}

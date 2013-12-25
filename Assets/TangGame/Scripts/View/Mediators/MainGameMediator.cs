@@ -1,0 +1,469 @@
+﻿/**
+ * Main Game Mediator
+ * Author: zzc
+ *
+ * Edit: HuangXiaoBo
+ *
+ * Date: 2013/11/11
+ * Edit: zzc
+ */
+using UnityEngine;
+using System.Collections;
+using PureMVC.Patterns;
+using PureMVC.Interfaces;
+using System.Collections.Generic;
+using TS = TangScene;
+using TGN = TangGame.Net;
+using TE = TangEffect;
+using nh.ui.mediator;
+
+namespace TangGame.View
+{
+  public class MainGameMediator : Mediator
+  {
+    public static GameObject gameObject;
+    public static GameObject uiRoot;
+    public new const string NAME = "MAIN_GAME_MEDIATOR";
+    private IFacade facade = PureMVC.Patterns.Facade.Instance;
+    private delegate void Handle (INotification notification);
+
+    /// <summary>
+    /// 我的消息处理映射方法
+    /// </summary>
+    private Dictionary<string, Handle> handleTable = new Dictionary<string, Handle> ();
+
+    /// <summary>
+    ///   感兴趣的消息
+    /// </summary>
+    private List<string> interests = new List<string> ();
+
+    /// <summary>
+    /// 我的构造方法
+    /// </summary>
+    /// <param name="gameObject"></param>
+    public MainGameMediator (GameObject gameObject) : base(NAME)
+    {
+      MainGameMediator.gameObject = gameObject;
+
+      handleTable.Add (NtftNames.ON_REGISTER_GESTURE_INPUT, HandleOnRegisterGestureInput);
+      handleTable.Add (NtftNames.UN_REGISTER_GESTURE_INPUT, HandleUnRegisterGestureInput);
+
+      handleTable.Add (TangNet.NtftNames.TN_EXCEPTION, HandleNetWorkExcption);
+      handleTable.Add (TangNet.NtftNames.TN_CONNECTION_CLOSE, HandleNetWorkClose);
+
+      handleTable.Add (TS.NtftNames.SCENE_LOAD_COMPLETED, HandleSceneLoadCompleted);
+      handleTable.Add (TS.NtftNames.LEADING_ACTOR_MOVE, HandleLeadingHeroMove);
+      handleTable.Add (TS.NtftNames.ACTOR_CREATED, HandleActorCreated);
+
+      handleTable.Add (TS.NtftNames.SCENE_LOAD_START, HandleSceneLoadStart);
+      handleTable.Add (NtftNames.TG_LEADING_ACTOR_READY, HandleLeadingActorReady);
+    }
+    
+    /// <summary>
+    /// 我感兴趣的消息
+    /// </summary>
+    /// <returns></returns>
+    public override IList<string> ListNotificationInterests ()
+    {
+      if (interests.Count == 0) {
+
+        interests.Add (NtftNames.ON_REGISTER_GESTURE_INPUT);
+        interests.Add (NtftNames.UN_REGISTER_GESTURE_INPUT);
+
+        interests.Add (TangNet.NtftNames.TN_EXCEPTION);
+        interests.Add (TangNet.NtftNames.TN_CONNECTION_CLOSE);
+
+        interests.Add (TS.NtftNames.SCENE_LOAD_COMPLETED);
+        interests.Add (TS.NtftNames.LEADING_ACTOR_MOVE);
+        interests.Add (TS.NtftNames.TOUCH_ACTOR);
+        interests.Add (TS.NtftNames.TOUCH_MAP);
+        interests.Add (TS.NtftNames.ACTOR_CREATED);
+	interests.Add (TS.NtftNames.SCENE_LOAD_START);
+	interests.Add (NtftNames.TG_LEADING_ACTOR_READY);
+      }
+
+      return interests;
+    }
+
+
+    /// <summary>
+    /// 我注册的命令
+    /// </summary>
+    public override void OnRegister ()
+    {
+      this.OnRegisterMediator ();
+      this.OnRegisterCommand ();
+    }
+    
+    private void OnRegisterMediator ()
+    {
+      facade.RegisterMediator (new MainGamePanelMediator ());
+      facade.RegisterMediator (new GoodsPanelMediator ());
+      facade.RegisterMediator (new MissionTalkPanelMediator ());
+      facade.RegisterMediator (new MessagePanelMediator ());
+      facade.RegisterMediator (new RolePanelMediator ());
+      facade.RegisterMediator (new MissionAwardPanelMediator ());
+      facade.RegisterMediator (new NPCTalkPanelMediator ());
+      facade.RegisterMediator (new SkillPanelMediator ());
+      facade.RegisterMediator (new Role1stMediator ());
+      facade.RegisterMediator (new InfoPanelMediator ());
+      facade.RegisterMediator (new GameInputMediator ());
+			facade.RegisterMediator (new TargetAvatarPanelMediator());
+			facade.RegisterMediator (new nh.ui.ChatMediator());
+      facade.RegisterMediator(new AutoPanelMediator());
+      facade.RegisterMediator(new DeadMessageMediator());
+
+    }
+
+    private void OnRegisterCommand ()
+    {
+
+      // the notification from network ---
+     
+      
+      // 脉搏
+      facade.RegisterCommand (PulseCmd.NAME, typeof(PulseCmd));
+
+      // 场景
+      facade.RegisterCommand (HeroPointCmd.NAME, typeof(HeroPointCmd));
+      facade.RegisterCommand (OnSceneNPCCmd.NAME, typeof(OnSceneNPCCmd));
+      facade.RegisterCommand (UpdateHeroBattleStateCmd.NAME, typeof(UpdateHeroBattleStateCmd));
+      facade.RegisterCommand (AddHeroOnScenePushCmd.NAME, typeof(AddHeroOnScenePushCmd));
+      facade.RegisterCommand (HeroFastMoveCmd.NAME, typeof(HeroFastMoveCmd));
+      facade.RegisterCommand (HeroMoveCmd.NAME, typeof(HeroMoveCmd));
+      facade.RegisterCommand (MonsterMoveCmd.NAME, typeof(MonsterMoveCmd));
+      facade.RegisterCommand (OnSceneHeroCmd.NAME, typeof(OnSceneHeroCmd));
+      facade.RegisterCommand (OnSceneMonsterCmd.NAME, typeof(OnSceneMonsterCmd));
+      facade.RegisterCommand (RemoveNpcFromSceneCmd.NAME, typeof(RemoveNpcFromSceneCmd));
+      facade.RegisterCommand (RemoveHeroFromSceneCmd.NAME, typeof(RemoveHeroFromSceneCmd));
+      facade.RegisterCommand (MonsterReliveCmd.NAME, typeof(MonsterReliveCmd));
+      facade.RegisterCommand (HeroReliveCmd.NAME, typeof(HeroReliveCmd));
+      facade.RegisterCommand (ReliveCmd.NAME, typeof(ReliveCmd));
+      facade.RegisterCommand (HeroRvisePointCmd.NAME, typeof(HeroRvisePointCmd));
+      facade.RegisterCommand (ToMapResultCmd.NAME, typeof(ToMapResultCmd));
+      facade.RegisterCommand (NpcTaskMarkCmd.NAME,typeof(NpcTaskMarkCmd));
+
+      facade.RegisterCommand (SearchNpcResultCmd.NAME, typeof(SearchNpcResultCmd));
+      facade.RegisterCommand (SearchMapResultCmd.NAME, typeof(SearchMapResultCmd));
+      facade.RegisterCommand (ToMapResultCmd.NAME, typeof(ToMapResultCmd));
+      
+      //获取npc详细信息
+      facade.RegisterCommand (GetSceneNpcInfoCmd.NAME, typeof(GetSceneNpcInfoCmd));
+      //任务相关
+      facade.RegisterCommand (KnowTaskResultCmd.NAME, typeof(KnowTaskResultCmd));
+      facade.RegisterCommand (TaskRewardResultCmd.NAME, typeof(TaskRewardResultCmd));
+      facade.RegisterCommand (AccpteTaskResultCmd.NAME, typeof(AccpteTaskResultCmd));
+      facade.RegisterCommand (TaskUpdatePushCmd.NAME, typeof(TaskUpdatePushCmd));
+      facade.RegisterCommand (AutoTrackTaskCmd.NAME, typeof(AutoTrackTaskCmd));
+
+      // 战斗
+      facade.RegisterCommand (BattleResultCmd.NAME, typeof(BattleResultCmd));
+      facade.RegisterCommand (ReadyAttackPushCmd.NAME, typeof(ReadyAttackPushCmd));
+      facade.RegisterCommand (ReadyAttackResultCmd.NAME, typeof(ReadyAttackResultCmd));
+
+      // 英雄
+      facade.RegisterCommand (HeroPropertyCmd.NAME, typeof(HeroPropertyCmd));
+
+
+      // 背包相关
+      facade.RegisterCommand (SynPackInfoCommand.NAME, typeof(SynPackInfoCommand));
+      facade.RegisterCommand (DeleteItemCommand.NAME, typeof(DeleteItemCommand));
+      facade.RegisterCommand (SortItemCommand.NAME, typeof(SortItemCommand));
+      
+  
+      // 角色面板相关
+      facade.RegisterCommand (AskForHeroEquCommand.NAME, typeof(AskForHeroEquCommand));
+      facade.RegisterCommand(EquipUpdateCommand.NAME,typeof(EquipUpdateCommand));
+	  facade.RegisterCommand(EquipUpgradeStatusCommand.NAME,typeof(EquipUpgradeStatusCommand));
+    
+    
+      // the notification from self
+      // 注册场景手势输入
+      SendNotification (NtftNames.ON_REGISTER_GESTURE_INPUT);
+      facade.RegisterCommand (LeadingActorEnterSceneCmd.NAME, typeof(LeadingActorEnterSceneCmd));
+      facade.RegisterCommand (RunLastInstructionTemporaryCmd.NAME, typeof(RunLastInstructionTemporaryCmd));
+      facade.RegisterCommand (RemoveActorCmd.NAME, typeof(RemoveActorCmd));
+
+      // TangScene
+      facade.RegisterCommand (TraceRangeEnterCmd.NAME, typeof(TraceRangeEnterCmd));
+      facade.RegisterCommand (ActorStatusChangeCmd.NAME, typeof(ActorStatusChangeCmd));
+      facade.RegisterCommand (TS.NtftNames.ACTORS_REMOVED, typeof(RemoveActorsCmd));
+      facade.RegisterCommand (TS.NtftNames.ATTACK_HIT, typeof(AttackHitCmd));
+      facade.RegisterCommand (TS.NtftNames.PORTAL_CONVEY, typeof(PortalConveyCmd));
+      
+      // TangGame
+      facade.RegisterCommand (ShowBattleResultCmd.NAME, typeof(ShowBattleResultCmd));
+      facade.RegisterCommand (NtftNames.AUTO_NAV_STARTED, typeof(AutoNavStartedCmd));
+      facade.RegisterCommand (NtftNames.AUTO_NAV_TERMINATED, typeof(AutoNavTerminatedCmd));
+      facade.RegisterCommand (HookCmd.NAME, typeof(HookCmd));
+      facade.RegisterCommand (UnhookCmd.NAME, typeof(UnhookCmd));
+      facade.RegisterCommand (NtftNames.AUTO_NAV, typeof(AutoNavCmd));
+
+
+      // TangEffect
+      facade.RegisterCommand (TE.NtftNames.HIT, typeof(HitCmd));
+      //技能面板
+      facade.RegisterCommand (UpdateSkillCommand.NAME, typeof(UpdateSkillCommand));
+	  facade.RegisterCommand (TS.NtftNames.ACTOR_SELECTED, typeof(ActorSelectedCmd));
+      facade.RegisterCommand (TS.NtftNames.ACTOR_UNSELECTED, typeof(ActorUnselectedCmd));
+
+      //技能相关
+      facade.RegisterCommand (HeroUseSkillPushCmd.NAME, typeof(HeroUseSkillPushCmd));
+			facade.RegisterCommand (SkillStudyCmd.NAME, typeof(SkillStudyCmd));
+			facade.RegisterCommand (SkillLevelUpCmd.NAME, typeof(SkillLevelUpCmd));
+
+			facade.RegisterCommand (GetTargetHeadInfoCommand.NAME, typeof(GetTargetHeadInfoCommand));
+			facade.RegisterCommand (UpdateTargetInfoCmd.NAME, typeof(UpdateTargetInfoCmd));
+      
+    }
+    
+    /// <summary>
+    /// 处理通知
+    /// </summary>
+    /// <param name="notification"></param>
+    public override void HandleNotification (INotification notification)
+    {
+      if (handleTable.ContainsKey (notification.Name))
+        handleTable [notification.Name] (notification);
+    }
+    /// <summary>
+    /// 别人告诉我场景加载完毕了，我就去做点事情
+    /// </summary>
+    /// <param name="notification"></param>
+    private void HandleSceneLoadCompleted (INotification notification)
+    {
+
+      if (uiRoot == null) {
+        uiRoot = GameObject.Instantiate (Resources.Load ("Prefabs/UI Root (2D)")) as GameObject;
+        uiRoot.AddComponent<DontDestroyOnLoad> ();
+      }
+
+      SendNotification (NotificationIDs.ID_EnableSceneClick);
+
+      SendNotification (LeadingActorEnterSceneCmd.NAME);
+
+      TangNet.TN.Send (new TGN.SceneHeroRequest ());
+      TangNet.TN.Send (new TGN.SceneMonsterRequest ());
+      TangNet.TN.Send (new TGN.SceneNpcRequest ());
+
+      SendNotification(NtftNames.TG_LOADING_END);
+    }
+
+    // 注册场景手势输入
+    public void HandleOnRegisterGestureInput (INotification notification)
+    {
+
+      facade.RegisterCommand (TouchActorCmd.NAME, typeof(TouchActorCmd));
+      facade.RegisterCommand (SwipeMonsterCmd.NAME, typeof(SwipeMonsterCmd));
+      facade.RegisterCommand (SwipeHeroCmd.NAME, typeof(SwipeHeroCmd));
+      facade.RegisterCommand (SwipeNpcCmd.NAME, typeof(SwipeNpcCmd));
+      
+      if (!handleTable.ContainsKey (TS.NtftNames.TOUCH_ACTOR)) {
+        handleTable.Add (TS.NtftNames.TOUCH_ACTOR, handleTouchActor);
+      }
+      if (!handleTable.ContainsKey (TS.NtftNames.TOUCH_MAP)) {
+        handleTable.Add (TS.NtftNames.TOUCH_MAP, handleTouchMap);
+      }
+      
+    }
+
+    // 注销场景手势输入
+    public void HandleUnRegisterGestureInput (INotification notification)
+    {
+      facade.RemoveCommand (TouchActorCmd.NAME);
+      facade.RemoveCommand (SwipeMonsterCmd.NAME);
+      facade.RemoveCommand (SwipeHeroCmd.NAME);
+      facade.RemoveCommand (SwipeNpcCmd.NAME);
+      
+      if (handleTable.ContainsKey (TS.NtftNames.TOUCH_ACTOR)) {
+        handleTable.Remove (TS.NtftNames.TOUCH_ACTOR);
+      }
+      if (handleTable.ContainsKey (TS.NtftNames.TOUCH_MAP)) {
+        handleTable.Remove (TS.NtftNames.TOUCH_MAP);
+      }
+    }
+    
+    /// <summary>
+    /// 场景通知我人物创建成功
+    /// </summary>
+    /// <param name="notification">通知</param>
+    private void HandleActorCreated (INotification notification)
+    {
+      long actorId = (long)notification.Body;
+      TGN.ActorNo actor = ActorCache.actors [actorId];
+      if (actor != null)
+        TS.TS.ChangeActorSpeed (actor.id, GameUtils.ServerToClientSpeed (actor.speed));
+
+      GameObject actorObj = TS.TS.GetActorGameObject (actorId);
+      Color mColor = Color.red;
+      TS.ActorType type = ActorCache.GetActorTypeById (actorId);
+      switch (type) {
+      case TS.ActorType.monster:
+        mColor = Color.red;
+        break;
+      case TS.ActorType.npc:
+        mColor = Color.green;
+        break;
+      case TS.ActorType.hero:
+        if (actorId == ActorCache.leadingActorId)
+          mColor = Color.cyan;
+        else
+          mColor = Color.white;
+        break;
+      case TS.ActorType.pet:
+        mColor = Color.yellow;
+        break;  
+      }
+      zyhd.TEffect.TEffect te = new zyhd.TEffect.TEffect (zyhd.TEffect.TEffectType.PlayerName,
+                ActorCache.actors [actorId].name,
+                mColor, 13, new Vector3 (0, 120, 0), actorObj);
+      if (!ActorCache.nameLabelDictionary.ContainsKey (actor.id)) {
+        ActorCache.nameLabelDictionary.Add (actor.id, te);
+      }
+
+      if(actor is TGN.Npc){
+        TGN.Npc npc = actor as TGN.Npc;
+        NpcTaskMarkBhvr npcTaskMarkBhvr = actorObj.AddComponent<NpcTaskMarkBhvr>();
+        npcTaskMarkBhvr.npc = npc;
+      }
+
+      if( actorId == ActorCache.leadingActorId )
+	{
+	  // 主角被创建
+	  SendNotification( NtftNames.TG_LEADING_ACTOR_READY );
+	}
+      
+    }
+
+    /// <summary>
+    /// 别人告诉我网络有异常，我就去做点事情
+    /// </summary>
+    /// <param name="notification"></param>
+    private void HandleNetWorkExcption (INotification notification)
+    {
+      Debug.LogWarning (notification.Body as System.Exception);
+    }
+
+    /// <summary>
+    ///   处理网络连接关闭的消息
+    /// </summary>
+    private void HandleNetWorkClose (INotification notification)
+    {
+      Debug.LogError ("Sokcet 连接断开~~~");
+      GlobalFunction.SendPopMessage ("Socket 连接断开");
+    }
+
+    /// <summary>
+    /// 别人告诉我我自己在移动，所以我要去做点事情
+    /// </summary>
+    /// <param name="notification"></param>
+    private void HandleLeadingHeroMove (INotification notification)
+    {
+      Vector3 posi = (Vector3)notification.Body;
+      TangUtils.Point point = TangUtils.GridUtil.Vector3ToPoint (posi);
+      TangNet.TN.Send (new TGN.HeroMoveRequest (point));
+    }
+
+    /// <summary>
+    /// I was told to touch the role, I'm going to do something
+    /// </summary>
+    /// <param name='notification'>
+    /// Notification.
+    /// </param>
+    private void handleTouchActor (INotification notification)
+    {
+
+      // 停止自动寻路
+      if( AutoNavCache.isActive )
+        AutoNavHelper.Terminate();
+      
+      // 取消自动挂机
+      if( BattleCache.onHook ){
+        SendNotification(NtftNames.TG_UNHOOK);
+      }
+      
+      TangScene.ActorTouchHit actorTouchHit = notification.Body as TangScene.ActorTouchHit;
+      long touchedActorId = actorTouchHit.actorId;
+      Gesture gesture = actorTouchHit.extraObject as Gesture;
+
+      // 判断手势操作是否是划动
+      if (gesture.swipe.Equals (EasyTouch.SwipeType.None)) {
+        // 判断是否要指令缓存
+        if (InstructionCache.isInstructionCached) {
+          InstructionCache.instructionQueue.Clear ();
+          InstructionCache.instructionQueue.Enqueue (notification);
+          return;
+        }
+        //设置目标ID为当前点击怪物的ID
+        ActorCache.targetActorId = touchedActorId;
+        SendNotification (TouchActorCmd.NAME, touchedActorId);
+      } else {
+        // 判断是否要指令缓存
+        if (InstructionCache.isInstructionCached) {
+          InstructionCache.instructionQueue.Enqueue (notification);
+          return;
+        }
+        
+        // 判断划中角色类型
+        switch (ActorCache.GetActorTypeById (touchedActorId)) {
+        case TS.ActorType.monster:
+          SendNotification (SwipeMonsterCmd.NAME, notification.Body);
+          break;
+        case TS.ActorType.hero:
+          SendNotification (SwipeHeroCmd.NAME, notification.Body);
+          break;
+        case TS.ActorType.npc:
+	  SendNotification (SwipeNpcCmd.NAME, notification.Body);
+          break;
+        }
+      }
+      
+      
+      
+    }
+    /// <summary>
+    /// Handles the touch map.
+    /// </summary>
+    /// <param name='notification'>
+    /// Notification.
+    /// </param>
+    private void handleTouchMap (INotification notification)
+    {
+      
+      // 停止自动寻路
+      if( AutoNavCache.isActive )
+        AutoNavHelper.Terminate();
+      
+      // 取消自动挂机
+      if( BattleCache.onHook ){
+        SendNotification(NtftNames.TG_UNHOOK);
+      }
+
+      Tang.TouchHit touchHit = notification.Body as Tang.TouchHit;
+      Gesture gesture = touchHit.extraObject as Gesture;
+
+      //判断手势操作是否是划动
+      if (gesture.swipe.Equals (EasyTouch.SwipeType.None)) {
+        // 判断是否要指令缓存
+        if (InstructionCache.isInstructionCached) {
+          InstructionCache.instructionQueue.Clear ();
+          InstructionCache.instructionQueue.Enqueue (notification);
+          return;
+        }
+        TS.TS.CancelTrace (ActorCache.leadingActorId);
+        TS.TS.ActorNavigate (new TS.MoveBean (ActorCache.leadingActorId, touchHit.point));
+      }
+    }
+
+    private void HandleSceneLoadStart(INotification notification)
+    {
+//      SendNotification(NtftNames.TG_LOADING_START);
+    }
+
+    private void HandleLeadingActorReady(INotification notification)
+    {
+//      SendNotification(NtftNames.TG_LOADING_END);
+    }
+
+  }
+}

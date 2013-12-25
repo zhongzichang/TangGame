@@ -1,0 +1,28 @@
+{"frames": {
+
+"001":
+{
+	"frame": {"x":2,"y":2,"w":467,"h":606},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":467,"h":606},
+	"sourceSize": {"w":471,"h":606}
+},
+"002":
+{
+	"frame": {"x":471,"y":2,"w":413,"h":514},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":92,"w":413,"h":514},
+	"sourceSize": {"w":471,"h":606}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker ",
+	"version": "1.0",
+	"image": "BigHead.png",
+	"format": "RGBA8888",
+	"size": {"w":1024,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:3c77380d766735ab21675adb12e1da8c:1/1$"
+}
+}

@@ -1,0 +1,15 @@
+/**
+ * Loading Panel Mediator
+ *
+ * Author: zzc
+ * Date: 2013/11/29
+ *
+ */
+
+using PureMVC.Interfaces;
+using PureMVC.Patterns;
+
+namespace TangGame.View
+{
+  
+}

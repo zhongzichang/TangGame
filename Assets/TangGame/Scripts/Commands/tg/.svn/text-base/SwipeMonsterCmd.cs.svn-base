@@ -1,0 +1,53 @@
+﻿/**
+ * swip monster command
+ * Date: ?
+ * Auhtor: HuangXiaoBo
+ * 
+ * Date: 2013/11/1
+ * Edit: zzc
+ */
+
+using UnityEngine;
+using System.Collections;
+using PureMVC.Interfaces;
+using PureMVC.Patterns;
+using TS = TangScene;
+using TGN = TangGame.Net;
+using TangUtils;
+using TGX = TangGame.Xml;
+
+namespace TangGame
+{
+
+  /// <summary>
+  ///   手指划过屏幕选中怪物后的处理
+  /// </summary>
+  public class SwipeMonsterCmd : SimpleCommand
+  {
+
+    public static string NAME = "TS_SWIPE_MONSTER";
+
+    public override void Execute (INotification notification)
+    {
+
+      TangScene.ActorTouchHit actorTouchHit = notification.Body as TangScene.ActorTouchHit;
+
+      long swipedActorId = actorTouchHit.actorId;
+      Gesture gesture = actorTouchHit.extraObject as Gesture;
+
+      ActorCache.AddOrUpdateSwipeActorId(swipedActorId);
+      ActorCache.AddOrUpdateSwipeMonsterId(swipedActorId);
+
+      if(ActorCache.swipeMonsterIds.Count == 1)
+      {
+
+        // 设置当前目标ID为滑中怪物中的第一个ID
+        ActorCache.targetActorId = swipedActorId;
+
+        // 追踪目标
+        BattleHelper.SprintTrace( swipedActorId );
+
+      }
+    }
+  }
+}

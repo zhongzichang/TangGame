@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <value>
+    <id>1</id>
+    <name>select</name>
+    <assetSetId>9000</assetSetId>
+    <assetId>9000</assetId>
+    <scripts>
+      <c>PlayOnActive</c>
+    </scripts>
+  </value>
+  <value>
+    <id>2</id>
+    <name>upgrade</name>
+    <assetSetId>9001</assetSetId>
+    <assetId>9001</assetId>
+    <scripts>
+      <c>PlayOnce</c>
+    </scripts>
+  </value>
+  <value>
+    <id>3</id>
+    <name>heroSelected</name>
+    <assetSetId>9002</assetSetId>
+    <assetId>9002</assetId>
+    <scripts>
+      <c>PlayOnActive</c>
+    </scripts>
+  </value>
+
+</root>
+

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<T>
+		<Id>1</Id>
+		<Next_id>2</Next_id>
+		<Exp>100</Exp>
+		<Upgradenum>1,5</Upgradenum>
+		<Money>1</Money>
+		<Upexp>10</Upexp>
+		<Minitype_id>1:1</Minitype_id>
+		<Gold>1,70</Gold>
+		<Silver>1,210</Silver>
+	</T>
+	<T>
+		<Id>2</Id>
+		<Next_id>-1</Next_id>
+		<Exp>100</Exp>
+		<Upgradenum>1,5</Upgradenum>
+		<Money>1</Money>
+		<Upexp>10</Upexp>
+		<Minitype_id>1:1</Minitype_id>
+		<Gold>1,70</Gold>
+		<Silver>1,210</Silver>
+	</T>
+</root>
