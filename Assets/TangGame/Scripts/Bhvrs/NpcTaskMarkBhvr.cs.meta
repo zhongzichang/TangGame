@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: abd8c1cdf5c91de48aef760174b10d4b
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - npcTaskMarkObj: {fileID: 100000, guid: 11ece47389bb6d34b8b9e4676a3980a8, type: 2}
+  - animator: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
