@@ -6,6 +6,7 @@
 
 using UnityEngine;
 using System;
+using System.Reflection;
 using TangGame;
 using TS = TangScene;
 
@@ -44,7 +45,7 @@ namespace TangUI
     /// <summary>
     ///   Body
     /// </summary>
-    public object body;
+    public object param;
 
     /// <summary>
     ///   Context
@@ -77,11 +78,11 @@ namespace TangUI
     /// <summary>
     ///   Launch
     /// </summary>
-    public void Launch(bool replace, object body)
+    public void Launch(bool replace, object param)
     {
 
       this.replace = replace;
-      this.body = body;
+      this.param = param;
 
       gameObject = context.cache.GetInactiveGobj(name);
       if( null == gameObject )
@@ -121,6 +122,9 @@ namespace TangUI
 	{
 	  gameObject.name = name;
 	  context.cache.Put(name, gameObject);
+
+	  DynamicBindUtil.BindScriptAndProperty(gameObject, name);
+
 	  Show();	  
 	}
 
@@ -152,6 +156,18 @@ namespace TangUI
 	  UIPanel panel = gameObject.GetComponent<UIPanel>();
 	  if( null != panel )
 	    panel.depth = context.depth;
+
+	  // assign param
+	  MonoBehaviour script = gameObject.GetComponent(name) as MonoBehaviour;
+	  if (script != null)
+	    {
+	      FieldInfo fieldInfo = script.GetType().GetField("param");
+	      if( fieldInfo != null )
+		{
+		  fieldInfo.SetValue(script, param);
+		}
+	    }
+	  
 
 	  if( !gameObject.activeSelf )
 	    NGUITools.SetActive(gameObject, true);

@@ -39,7 +39,7 @@ namespace TangUI
 	{
 	  if( mgr != null )
 	    {
-	      mgr.LazyOpen("RolePanel", true);
+	      mgr.LazyOpen("RolePanel", true, "test param");
 	    }
 	}
 
