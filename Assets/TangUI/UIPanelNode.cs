@@ -15,6 +15,11 @@ namespace TangUI
   public class UIPanelNode
   {
 
+    public enum OpenMode
+    {
+      ADDITIVE, OVERRIDE, REPLACE
+    }
+
     private UIPanelNodeContext m_context;
 
     /// <summary>
@@ -40,7 +45,12 @@ namespace TangUI
     /// <summary>
     ///   Replace
     /// </summary>
-    public bool replace = false;
+    //public bool replace = false;
+
+    /// <summary>
+    ///   Open Mode
+    /// </summary>
+    public OpenMode openMode;
 
     /// <summary>
     ///   Body
@@ -78,10 +88,10 @@ namespace TangUI
     /// <summary>
     ///   Launch
     /// </summary>
-    public void Launch(bool replace, object param)
+    public void Launch(OpenMode openMode, object param)
     {
 
-      this.replace = replace;
+      this.openMode = openMode;
       this.param = param;
 
       gameObject = context.cache.GetInactiveGobj(name);
@@ -134,7 +144,12 @@ namespace TangUI
     {
 
       // hide previous node
-      if( replace && !(preNode is UIPanelRoot ))
+      if( openMode == OpenMode.REPLACE && !(preNode is UIPanelRoot ))
+	{
+	  preNode.Remove();
+	}
+
+      else if( openMode == OpenMode.OVERRIDE )
 	{
 	  preNode.Hide();
 	}
@@ -179,7 +194,7 @@ namespace TangUI
 	}
     }
 
-    public void Hide()
+    public void Remove()
     {
       if( !(this is UIPanelRoot ))
 	{
@@ -190,6 +205,19 @@ namespace TangUI
 	  context.currentNode = preNode;
 	  context.depth--;
 
+	  if (!( preNode is UIPanelRoot && preNode.gameObject != null && !preNode.gameObject.activeSelf))
+	    {
+	      preNode.SetActive(true);
+	    }
+
+	}
+    }
+
+    public void Hide()
+    {
+      if( !(this is UIPanelRoot ))
+	{
+	  SetActive(false);
 	}
     }
 

@@ -39,7 +39,7 @@ namespace TangUI
 	{
 	  if( mgr != null )
 	    {
-	      mgr.LazyOpen("RolePanel", true, "test param");
+	      mgr.LazyOpen("RolePanel", UIPanelNode.OpenMode.OVERRIDE, "test param");
 	    }
 	}
 
@@ -47,7 +47,7 @@ namespace TangUI
 	{
 	  if( mgr != null )
 	    {
-	      mgr.LazyOpen("SkillPanel", true);
+	      mgr.LazyOpen("SkillPanel", UIPanelNode.OpenMode.OVERRIDE);
 	    }
 	}
 

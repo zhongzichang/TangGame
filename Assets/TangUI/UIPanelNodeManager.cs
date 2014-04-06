@@ -26,21 +26,21 @@ namespace TangUI
 
     public void LazyOpen(string name)
     {
-      LazyOpen(name, false, null);
+      LazyOpen(name, UIPanelNode.OpenMode.ADDITIVE, null);
     }
 
-    public void LazyOpen(string name, bool replace)
+    public void LazyOpen(string name, UIPanelNode.OpenMode openMode)
     {
-      LazyOpen(name, replace, null);
+      LazyOpen(name, openMode, null);
     }
 
-    public void LazyOpen(string name, bool replace, object param)
+    public void LazyOpen(string name, UIPanelNode.OpenMode openMode, object param)
     {
       if( !name.Equals( context.currentNode.name ) )
 	{
 	  UIPanelNode node = new UIPanelNode(name);
 	  node.context = context;
-	  node.Launch( replace, param);
+	  node.Launch( openMode,  param);
 	}
       
     }
@@ -50,7 +50,9 @@ namespace TangUI
     {
       if( !(context.currentNode is UIPanelRoot) )
 	{
-	  context.currentNode.Hide();
+	  context.currentNode.Remove();
+
+	  
 	}
     }
     
