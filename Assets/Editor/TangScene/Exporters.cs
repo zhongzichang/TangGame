@@ -515,7 +515,7 @@ namespace TangScene
 	{
 
 	  string layerName = spriteLayer.name;
-	  TASprite spritePrefab = null;
+	  TTSprite spritePrefab = null;
 	  string spriteName = null;
 	  if( spriteLayer.spritePrefab != null)
 	    {

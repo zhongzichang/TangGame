@@ -32,7 +32,7 @@ namespace Tang
 	string animationsDir = String.Join("/", splits, 0, splits.Length - 4) + "/Animations";
 				
 	// 判断该对象是不是
-	TASprite sprite = obj.GetComponent<TASprite>();
+	TTSprite sprite = obj.GetComponent<TTSprite>();
 
 	if(sprite != null) {
 					
@@ -41,7 +41,7 @@ namespace Tang
 	  SpriteAnimation animation = animationObj.AddComponent<SpriteAnimation>();
 					
 	  // animation.
-	  SpriteLayer clothesLayer = new BodyLayer(obj.GetComponent<TASprite>());
+	  SpriteLayer clothesLayer = new BodyLayer(obj.GetComponent<TTSprite>());
 	  animation.PutLayer(clothesLayer);
 	  animation.DestroyChildren();
 	  animation.playOnStart = true;
