@@ -205,7 +205,7 @@ namespace TangUI
 	  context.currentNode = preNode;
 	  context.depth--;
 
-	  if (!( preNode is UIPanelRoot && preNode.gameObject != null && !preNode.gameObject.activeSelf))
+	  if ( (!( preNode is UIPanelRoot)) && preNode.gameObject != null && !preNode.gameObject.activeSelf)
 	    {
 	      preNode.SetActive(true);
 	    }
