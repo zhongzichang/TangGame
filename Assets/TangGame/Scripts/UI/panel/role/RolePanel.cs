@@ -121,11 +121,17 @@ namespace nh.ui.main
 		}
 
 		void Update(){
+
+		  if( sa != null )
+		    {
+		      
 			timer += Time.deltaTime;
 			if(timer > 0.1){
 				sa.currentIndex = (sa.currentIndex + 1)%9;
 				timer = 0;
 			}
+		    }
+
 		}
 
 		private void CreateHeroImage(){
